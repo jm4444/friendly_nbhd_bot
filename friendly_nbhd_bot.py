@@ -28,12 +28,30 @@ friendly_nbhd_bot = praw.Reddit(client_id = pv.client_id,
                      user_agent = 'a bot for monitoring /r/thenbhd by /u/scratch_pad',
                      username = 'friendly_nbhd_bot')
 
+youtube = build("youtube", "v3", developerKey = pv.youtube_api_key)
+
 nbhd_subreddit = friendly_nbhd_bot.subreddit('ScratchpadsScratchpad')
+
+
+
+#  -  -  -  -  -  -  -  -  -  -  -  -  - CLASSES -  -  -  -  -  -  -  -  -  -  -  -  -  #
+
+class YouTubeChannel:
+    def __init__(self, channel_name, uploads_playlist):
+        self.channel_name = channel_name
+        self.uploads_playlist = uploads_playlist
+
+        self.number_of_uploads = youtube.playlistItems().list(part="snippet, ContentDetails", maxResults=3, playlistId=uploads_playlist).execute()['pageInfo']['totalResults']
+        print(self.number_of_uploads)
 
 
 
 #  -  -  -  -  -  -  -  -  -  -  -  -  - RUNNING THE BOT -  -  -  -  -  -  -  -  -  -  -  -  -  #
 
 print(friendly_nbhd_bot.user.me())    # Checks to make sure the bot has successfully logged into Reddit
+
+nbhd_youtube_channel = YouTubeChannel("The Neighbourhood", "UUDAXusYwRJpiSP2CHnXnVnw")
+nbhd_vevo_channel = YouTubeChannel("TheNeighbourhoodVEVO", "UUJRqaM_C1asb8fq-zeSps0w")
+jesse_vevo_channel = YouTubeChannel("JesseRutherfordVEVO", 'UUghSc9_3AD8eLqfYvf01BnA')
 
 # nbhd_subreddit.submit('Test Post', 'Hello Reddit :)', url = None)    # Code for submitting a post to the subreddit
