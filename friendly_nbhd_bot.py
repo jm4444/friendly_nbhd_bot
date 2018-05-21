@@ -22,7 +22,7 @@ from googleapiclient.errors import HttpError
 
 #  -  -  -  -  -  -  -  -  -  -  -  -  - VARIABLES -  -  -  -  -  -  -  -  -  -  -  -  -  #
 
-friendly_nbhd_bot = praw.Reddit(client_id = pv.client_id,
+reddit = praw.Reddit(client_id = pv.client_id,
                      client_secret = pv.client_secret,
                      password = pv.password,
                      user_agent = 'a bot for monitoring /r/thenbhd by /u/scratch_pad',
@@ -30,7 +30,7 @@ friendly_nbhd_bot = praw.Reddit(client_id = pv.client_id,
 
 youtube = build("youtube", "v3", developerKey = pv.youtube_api_key)
 
-nbhd_subreddit = friendly_nbhd_bot.subreddit('ScratchpadsScratchpad')
+nbhd_subreddit = reddit.subreddit('ScratchpadsScratchpad')    # Currently set to a personal subreddit for development
 
 
 
@@ -48,7 +48,7 @@ class YouTubeChannel:
 
 #  -  -  -  -  -  -  -  -  -  -  -  -  - RUNNING THE BOT -  -  -  -  -  -  -  -  -  -  -  -  -  #
 
-print(friendly_nbhd_bot.user.me())    # Checks to make sure the bot has successfully logged into Reddit
+print(reddit.user.me())    # Checks to make sure the bot has successfully logged into Reddit
 
 nbhd_youtube_channel = YouTubeChannel("The Neighbourhood", "UUDAXusYwRJpiSP2CHnXnVnw")
 nbhd_vevo_channel = YouTubeChannel("TheNeighbourhoodVEVO", "UUJRqaM_C1asb8fq-zeSps0w")
