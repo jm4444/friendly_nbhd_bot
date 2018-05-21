@@ -7,6 +7,10 @@ a reddit bot for monitoring r/thenbhd
 project started May 15, 2018
 
 """
+
+
+#  -  -  -  -  -  -  -  -  -  -  -  -  - SETUP -  -  -  -  -  -  -  -  -  -  -  -  -  #
+
 import praw, private_variables as pv
 
 friendly_nbhd_bot = praw.Reddit(client_id = pv.client_id,
@@ -17,6 +21,6 @@ friendly_nbhd_bot = praw.Reddit(client_id = pv.client_id,
 
 nbhd_subreddit = friendly_nbhd_bot.subreddit('ScratchpadsScratchpad')
 
-print(friendly_nbhd_bot.user.me())
+print(friendly_nbhd_bot.user.me())    # Checks to make sure the bot has successfully logged into Reddit
 
-# nbhd_subreddit.submit('Test Post', 'Hello Reddit :)', url = None)
+# nbhd_subreddit.submit('Test Post', 'Hello Reddit :)', url = None)    # Code for submitting a post to the subreddit
