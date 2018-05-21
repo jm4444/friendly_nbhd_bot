@@ -9,9 +9,18 @@ project started May 15, 2018
 """
 
 
-#  -  -  -  -  -  -  -  -  -  -  -  -  - SETUP -  -  -  -  -  -  -  -  -  -  -  -  -  #
 
-import praw, private_variables as pv
+#  -  -  -  -  -  -  -  -  -  -  -  -  - IMPORT -  -  -  -  -  -  -  -  -  -  -  -  -  #
+
+import praw, os
+import private_variables as pv
+from time import time, sleep, localtime, strftime
+from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
+
+
+
+#  -  -  -  -  -  -  -  -  -  -  -  -  - VARIABLES -  -  -  -  -  -  -  -  -  -  -  -  -  #
 
 friendly_nbhd_bot = praw.Reddit(client_id = pv.client_id,
                      client_secret = pv.client_secret,
@@ -20,6 +29,10 @@ friendly_nbhd_bot = praw.Reddit(client_id = pv.client_id,
                      username = 'friendly_nbhd_bot')
 
 nbhd_subreddit = friendly_nbhd_bot.subreddit('ScratchpadsScratchpad')
+
+
+
+#  -  -  -  -  -  -  -  -  -  -  -  -  - RUNNING THE BOT -  -  -  -  -  -  -  -  -  -  -  -  -  #
 
 print(friendly_nbhd_bot.user.me())    # Checks to make sure the bot has successfully logged into Reddit
 
