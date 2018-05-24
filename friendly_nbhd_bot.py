@@ -41,7 +41,9 @@ class YouTubeChannel:
         self.channel_name = channel_name
         self.uploads_playlist = uploads_playlist
         self.number_of_uploads = youtube.playlistItems().list(part="snippet, ContentDetails", maxResults=3, playlistId=uploads_playlist).execute()['pageInfo']['totalResults']
-        print(self.number_of_uploads)
+        print(self.channel_name + " has uploaded " + str(self.number_of_uploads) + " videos.")
+
+
 
 
 
