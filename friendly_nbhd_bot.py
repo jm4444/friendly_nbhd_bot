@@ -36,10 +36,26 @@ nbhd_subreddit = reddit.subreddit('ScratchpadsScratchpad')    # Currently set to
 
 #  -  -  -  -  -  -  -  -  -  -  -  -  - FUNCTIONS -  -  -  -  -  -  -  -  -  -  -  -  -  #
 
+# A decorator that ensures the playlist functions will execute until they get a response
+def ensure_connection(f):
+    def g(*args, **kwargs):
+        timer = 1
+        while True:
+            try:
+                return f(*args, **kwargs)
+            except:
+                verbose("Warning! Connection error while getting playlist items!")
+                verbose("Retrying in %d seconds..." % (timer))
+                sleep(timer)
+                timer *= 2
+    return g
+
+@ensure_connection
 def get_playlist_items(youtube, uploads_playlist):
     https = youtube.playlistItems().list(part = "snippet, contentDetails", maxResults = 50, playlistId = uploads_playlist)
     return https, https.execute()
 
+@ensure_connection
 def get_next_playlist_page(youtube, https, uploads):
     https = youtube.playlistItems().list_next(https, uploads)
     return https, https.execute()
