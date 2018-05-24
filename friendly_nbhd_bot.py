@@ -37,8 +37,12 @@ nbhd_subreddit = reddit.subreddit('ScratchpadsScratchpad')    # Currently set to
 #  -  -  -  -  -  -  -  -  -  -  -  -  - FUNCTIONS -  -  -  -  -  -  -  -  -  -  -  -  -  #
 
 # @ensureConnection
-def getPlaylistItems(youtube, uploads_playlist):
+def get_playlist_items(youtube, uploads_playlist):
     https = youtube.playlistItems().list(part = "snippet, contentDetails", maxResults = 50, playlistId = uploads_playlist)
+    return https, https.execute()
+
+def get_next_playlist_page(youtube, https, uploads):
+    https = youtube.playlistItems().list_next(https, uploads)
     return https, https.execute()
 
 
@@ -56,7 +60,7 @@ class YouTubeChannel:
 
     def store_all_upload_ids(self):
         self.upload_ids = []
-        https, uploads = getPlaylistItems(youtube, self.uploads_playlist)
+        https, uploads = get_playlist_items(youtube, self.uploads_playlist)
         more_videos = True
         # print(uploads)
 
@@ -69,10 +73,10 @@ class YouTubeChannel:
                 more_videos = False
 
             if 'nextPageToken' in uploads.keys():    # Goes to the next page of uploads, if there is one
-                https, uploads = getNextPlPage(youtube, https, uploads)
+                https, uploads = get_next_playlist_page(youtube, https, uploads)
             elif more_videos:
                 verbose('Warning: Loop reached while generating video list!', override=False)
-                https, uploads = getPlaylistItems(youtube, self.upload_IDs)
+                https, uploads = get_playlist_items(youtube, self.upload_IDs)
 
 
 
