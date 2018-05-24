@@ -40,7 +40,6 @@ class YouTubeChannel:
     def __init__(self, channel_name, uploads_playlist):
         self.channel_name = channel_name
         self.uploads_playlist = uploads_playlist
-
         self.number_of_uploads = youtube.playlistItems().list(part="snippet, ContentDetails", maxResults=3, playlistId=uploads_playlist).execute()['pageInfo']['totalResults']
         print(self.number_of_uploads)
 
