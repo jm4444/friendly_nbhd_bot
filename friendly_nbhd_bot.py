@@ -32,6 +32,8 @@ youtube = build("youtube", "v3", developerKey = pv.youtube_api_key)
 
 nbhd_subreddit = reddit.subreddit('ScratchpadsScratchpad')    # Currently set to a personal subreddit for development
 
+verbose = True    # Setting to false suppresses mundane information and most warnings
+
 
 
 #  -  -  -  -  -  -  -  -  -  -  -  -  - FUNCTIONS -  -  -  -  -  -  -  -  -  -  -  -  -  #
@@ -66,7 +68,7 @@ def get_next_playlist_page(youtube, https, uploads):
 def verbose(s, override = True):    # Provides a time stamp when an error occurs
     time_stamp = "[%s]:" % (strftime("%I:%M:%S %p",localtime(time())))
 
-    if VERBOSE or override:
+    if verbose or override:
         print(time_stamp, s)
 
 
@@ -74,6 +76,7 @@ def verbose(s, override = True):    # Provides a time stamp when an error occurs
 #  -  -  -  -  -  -  -  -  -  -  -  -  - CLASSES -  -  -  -  -  -  -  -  -  -  -  -  -  #
 
 class YouTubeChannel:
+    
     def __init__(self, channel_name, uploads_playlist):
         self.channel_name = channel_name
         self.uploads_playlist = uploads_playlist
@@ -88,6 +91,7 @@ class YouTubeChannel:
         more_videos = True
 
         while more_videos:
+
             for item in uploads['items']:    # Adds the video ID of every video to the upload_ids variable
                 upload_id = item['contentDetails']['videoId']
                 self.upload_ids.append(upload_id)
