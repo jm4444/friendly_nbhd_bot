@@ -76,14 +76,14 @@ def verbose(s, override = True):    # Provides a time stamp when an error occurs
 #  -  -  -  -  -  -  -  -  -  -  -  -  - CLASSES -  -  -  -  -  -  -  -  -  -  -  -  -  #
 
 class YouTubeChannel:
-    
+
     def __init__(self, channel_name, uploads_playlist):
         self.channel_name = channel_name
         self.uploads_playlist = uploads_playlist
         self.number_of_uploads = youtube.playlistItems().list(part="snippet, ContentDetails", maxResults=3, playlistId=uploads_playlist).execute()['pageInfo']['totalResults']
         print(self.channel_name + " has uploaded " + str(self.number_of_uploads) + " videos.")
         self.store_all_upload_ids()
-        print("There are " + str(len(self.upload_ids)) + " uploads IDs.")
+        print("There are " + str(len(self.upload_ids)) + " upload IDs.")
 
     def store_all_upload_ids(self):
         self.upload_ids = []
