@@ -50,15 +50,24 @@ def ensure_connection(f):
                 timer *= 2
     return g
 
+
 @ensure_connection
 def get_playlist_items(youtube, uploads_playlist):
     https = youtube.playlistItems().list(part = "snippet, contentDetails", maxResults = 50, playlistId = uploads_playlist)
     return https, https.execute()
 
+
 @ensure_connection
 def get_next_playlist_page(youtube, https, uploads):
     https = youtube.playlistItems().list_next(https, uploads)
     return https, https.execute()
+
+
+def verbose(s, override = True):    # Provides a time stamp when an error occurs
+    time_stamp = "[%s]:" % (strftime("%I:%M:%S %p",localtime(time())))
+
+    if VERBOSE or override:
+        print(time_stamp, s)
 
 
 
