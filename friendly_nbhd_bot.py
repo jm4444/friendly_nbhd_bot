@@ -36,7 +36,6 @@ nbhd_subreddit = reddit.subreddit('ScratchpadsScratchpad')    # Currently set to
 
 #  -  -  -  -  -  -  -  -  -  -  -  -  - FUNCTIONS -  -  -  -  -  -  -  -  -  -  -  -  -  #
 
-# @ensureConnection
 def get_playlist_items(youtube, uploads_playlist):
     https = youtube.playlistItems().list(part = "snippet, contentDetails", maxResults = 50, playlistId = uploads_playlist)
     return https, https.execute()
@@ -62,7 +61,6 @@ class YouTubeChannel:
         self.upload_ids = []
         https, uploads = get_playlist_items(youtube, self.uploads_playlist)
         more_videos = True
-        # print(uploads)
 
         while more_videos:
             for item in uploads['items']:    # Adds the video ID of every video to the upload_ids variable
