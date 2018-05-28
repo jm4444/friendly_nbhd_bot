@@ -72,6 +72,12 @@ def verbose(s, override = True):    # Provides a time stamp when an error occurs
         print(time_stamp, s)
 
 
+def controlled_sleep(interval, delay):    # Used to determine how often the bot pings youtube. The interval must be < 60. Delay is the number of seconds after 00 the bot should wait to ping
+    timer = abs((60 + delay) - localtime(time()).tm_sec)
+    while timer > interval: timer -= interval
+    sleep(timer)
+
+
 
 #  -  -  -  -  -  -  -  -  -  -  -  -  - CLASSES -  -  -  -  -  -  -  -  -  -  -  -  -  #
 
@@ -81,7 +87,7 @@ class YouTubeChannel:
         self.channel_name = channel_name
         self.uploads_playlist = uploads_playlist
         self.number_of_uploads = youtube.playlistItems().list(part = "snippet, ContentDetails", maxResults=3, playlistId = uploads_playlist).execute()['pageInfo']['totalResults']
-        print(self.channel_name + " has uploaded " + str(self.number_of_uploads) + " videos.")
+        print("\n" + self.channel_name + " has uploaded " + str(self.number_of_uploads) + " videos.")
         self.store_all_upload_ids()
         print("There are " + str(len(self.upload_ids)) + " upload IDs.")
 
@@ -154,10 +160,27 @@ class YouTubeChannel:
 
 #  -  -  -  -  -  -  -  -  -  -  -  -  - RUNNING THE BOT -  -  -  -  -  -  -  -  -  -  -  -  -  #
 
-print(reddit.user.me())    # Checks to make sure the bot has successfully logged into Reddit
+verbose('Initializing...')
 
+print("\n")
+print(reddit.user.me())    # Checks to make sure the bot has successfully logged into Reddit
 nbhd_youtube_channel = YouTubeChannel("The Neighbourhood", "UUDAXusYwRJpiSP2CHnXnVnw")
 nbhd_vevo_channel = YouTubeChannel("TheNeighbourhoodVEVO", "UUJRqaM_C1asb8fq-zeSps0w")
 jesse_vevo_channel = YouTubeChannel("JesseRutherfordVEVO", 'UUghSc9_3AD8eLqfYvf01BnA')
+print("\n")
 
-# nbhd_subreddit.submit('Test Post', 'Hello Reddit :)', url = None)    # Code for submitting a post to the subreddit
+verbose('Done!')
+
+while True:    # Checks for new videos and uploads them when they appear
+    try:
+        verbose("Checking for new uploads...", override=False)
+        nbhd_youtube_channel.post_new_video(youtube)
+        nbhd_vevo_channel.post_new_video(youtube)
+        jesse_vevo_channel.post_new_video(youtube)
+        controlled_sleep(20, 3)
+    except KeyboardInterrupt:
+        verbose("Keyboard interrupt received, ending violently.")
+        break
+    except Exception as e:
+        verbose(e)
+        break
