@@ -80,13 +80,15 @@ class YouTubeChannel:
     def __init__(self, channel_name, uploads_playlist):
         self.channel_name = channel_name
         self.uploads_playlist = uploads_playlist
-        self.number_of_uploads = youtube.playlistItems().list(part="snippet, ContentDetails", maxResults=3, playlistId=uploads_playlist).execute()['pageInfo']['totalResults']
+        self.number_of_uploads = youtube.playlistItems().list(part = "snippet, ContentDetails", maxResults=3, playlistId = uploads_playlist).execute()['pageInfo']['totalResults']
         print(self.channel_name + " has uploaded " + str(self.number_of_uploads) + " videos.")
         self.store_all_upload_ids()
         print("There are " + str(len(self.upload_ids)) + " upload IDs.")
 
+
     def store_all_upload_ids(self):
-        self.upload_ids = []
+        self.upload_ids = []    # Keeps track of all previously uploaded videos
+        self.new_uploads = set()    # Temporarily holds new uploads until they are posted
         https, uploads = get_playlist_items(youtube, self.uploads_playlist)
         more_videos = True
 
@@ -104,6 +106,49 @@ class YouTubeChannel:
             elif more_videos:
                 verbose('Warning: Loop reached while generating video list!', override=False)
                 https, uploads = get_playlist_items(youtube, self.upload_IDs)
+
+
+    def get_new_video(self, youtube):    # This function checks if the total number of videos in the upload playlist has increased, and returns the new videos if so
+        https, uploads = get_playlist_items(youtube, self.uploads_playlist)
+        current_number_of_uploads = uploads['pageInfo']['totalResults']
+        if current_number_of_uploads <= self.number_of_uploads:    # Ends the function if there are no new videos
+            return
+        new_number_of_uploads = current_number_of_uploads - self.number_of_uploads
+        self.number_of_uploads = current_number_of_uploads
+        i = 0
+
+        while i < new_number_of_uploads:
+
+            for item in uploads['items']:    # Searches each page of the playlist for new videos until it has found them all
+                upload_id = item['contentDetails']['videoId']
+
+                if upload_id not in self.upload_ids:
+                    title = item['snippet']['title']
+                    url = "https://www.youtube.com/watch?v=%s" % (upload_id)
+                    self.upload_ids.append(upload_id)
+                    self.new_uploads.add((title, url))
+                    i += 1
+
+            if 'nextPageToken' in uploads.keys():    # Loads the next page if there is one
+                https, uploads = get_next_playlist_page(youtube, https, uploads)
+            elif i < new_number_of_uploads:
+                verbose('Warning: Loop reached while searching for latest video!', override = False)
+                https, uploads = get_playlist_items(youtube, self.uploads_playlist)
+
+
+    def post_new_video(self, youtube):
+        self.get_new_video(youtube)
+        if self.new_uploads:
+            verbose("Found new content uploaded by %s!" % (self.channel_name))
+            for video in self.new_uploads.copy():
+                try:
+                    nbhd_subreddit.submit(title = video[VID_TITLE], url = video[VID_URL], resubmit = True, send_replies = False)
+                    self.new_uploads.remove(video)
+                    verbose('Submitted video \"%s\"' % (video[VID_TITLE]))
+                except Exception as e:
+                    verbose(e)
+        else:
+            verbose("No new uploads found for channel %s." % (self.channel_name), override = False)
 
 
 
