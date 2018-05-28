@@ -94,7 +94,7 @@ class YouTubeChannel:
 
     def store_all_upload_ids(self):
         self.upload_ids = []    # Keeps track of all previously uploaded videos
-        self.new_uploads = set()    # Temporarily holds new uploads until they are posted
+        self.new_uploads = []    # Temporarily holds new uploads until they are posted
         https, uploads = get_playlist_items(youtube, self.uploads_playlist)
         more_videos = True
 
@@ -132,7 +132,7 @@ class YouTubeChannel:
                     title = item['snippet']['title']
                     url = "https://www.youtube.com/watch?v=%s" % (upload_id)
                     self.upload_ids.append(upload_id)
-                    self.new_uploads.add((title, url))
+                    self.new_uploads.append((title, url))
                     i += 1
 
             if 'nextPageToken' in uploads.keys():    # Loads the next page if there is one
@@ -146,11 +146,12 @@ class YouTubeChannel:
         self.get_new_video(youtube)
         if self.new_uploads:
             verbose("Found new content uploaded by %s!" % (self.channel_name))
+            print(self.new_uploads)
             for video in self.new_uploads.copy():
                 try:
-                    nbhd_subreddit.submit(title = video[VID_TITLE], url = video[VID_URL], resubmit = True, send_replies = False)
+                    nbhd_subreddit.submit(title = video[0], url = video[1], resubmit = True, send_replies = False)
                     self.new_uploads.remove(video)
-                    verbose('Submitted video \"%s\"' % (video[VID_TITLE]))
+                    verbose('Submitted video \"%s\"' % (video[0]))
                 except Exception as e:
                     verbose(e)
         else:
@@ -166,7 +167,7 @@ print("\n")
 print(reddit.user.me())    # Checks to make sure the bot has successfully logged into Reddit
 nbhd_youtube_channel = YouTubeChannel("The Neighbourhood", "UUDAXusYwRJpiSP2CHnXnVnw")
 nbhd_vevo_channel = YouTubeChannel("TheNeighbourhoodVEVO", "UUJRqaM_C1asb8fq-zeSps0w")
-jesse_vevo_channel = YouTubeChannel("JesseRutherfordVEVO", 'UUghSc9_3AD8eLqfYvf01BnA')
+jesse_vevo_channel = YouTubeChannel("JesseRutherfordVEVO", "UUghSc9_3AD8eLqfYvf01BnA")
 print("\n")
 
 verbose('Done!')
