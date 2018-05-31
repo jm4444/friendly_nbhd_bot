@@ -147,7 +147,7 @@ class YouTubeChannel:
         if self.new_uploads:
             verbose("Found new content uploaded by %s!" % (self.channel_name))
             print(self.new_uploads)
-            for video in self.new_uploads.copy():
+            for video in self.new_uploads:
                 try:
                     nbhd_subreddit.submit(title = video[0], url = video[1], resubmit = True, send_replies = False)
                     self.new_uploads.remove(video)
