@@ -30,7 +30,7 @@ reddit = praw.Reddit(client_id = pv.client_id,
 
 youtube = build("youtube", "v3", developerKey = pv.youtube_api_key)
 
-nbhd_subreddit = reddit.subreddit('ScratchpadsScratchpad')    # Currently set to a personal subreddit for development
+nbhd_subreddit = reddit.subreddit('thenbhd')    # Currently set to a personal subreddit for development
 
 verbose = True    # Setting to false suppresses mundane information and most warnings
 
@@ -168,7 +168,6 @@ print(reddit.user.me())    # Checks to make sure the bot has successfully logged
 nbhd_youtube_channel = YouTubeChannel("The Neighbourhood", "UUDAXusYwRJpiSP2CHnXnVnw")
 nbhd_vevo_channel = YouTubeChannel("TheNeighbourhoodVEVO", "UUJRqaM_C1asb8fq-zeSps0w")
 jesse_vevo_channel = YouTubeChannel("JesseRutherfordVEVO", "UUghSc9_3AD8eLqfYvf01BnA")
-my_channel = YouTubeChannel("Justin Meredith", "UUEigi7CsrYMfujgALrm_rkw")
 print("\n")
 
 verbose('Done!')
@@ -179,7 +178,6 @@ while True:    # Checks for new videos and uploads them when they appear
         nbhd_youtube_channel.post_new_video(youtube)
         nbhd_vevo_channel.post_new_video(youtube)
         jesse_vevo_channel.post_new_video(youtube)
-        my_channel.post_new_video(youtube)
         controlled_sleep(20, 3)
     except KeyboardInterrupt:
         verbose("Keyboard interrupt received, ending violently.")
